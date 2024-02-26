@@ -48,7 +48,7 @@ def create_city(state_id):
     if 'name' not in data:
         abort(400, description="Missing name")
     obj = City(**data)
-    obj['state_id'] = state_id
+    setattr(obj, 'state_id', state_id)
     storage.new(obj)
     storage.save()
     return jsonify(obj.to_dict()), 201
@@ -60,9 +60,9 @@ def update_city(city_id):
     city = storage.get(City, city_id)
     if city is None:
         abort(404)
-    if not request.get_json:
+    data = request.get_json()
+    if not data:
         abort(400, description="Not a JSON")
-    data = request.get_json
     ignore_keys = ['id', 'state_id', 'created_at', 'updated_at']
     for key, value in data.items():
         if key not in ignore_keys:
