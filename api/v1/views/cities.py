@@ -37,7 +37,7 @@ def UD_city(city_id):
         storage.save()
         return jsonify({})
 
-    info = request.get_json()
+    info = request.get_json(silent=True)
     if not info:
         abort(400, "Not a JSON")
     for k, v in info.items():
@@ -54,7 +54,7 @@ def create_city(state_id):
     if not state:
         abort(404)
 
-    info = request.get_json()
+    info = request.get_json(silent=True)
     if not info:
         abort(400, "Not a JSON")
     if 'name' not in info:
