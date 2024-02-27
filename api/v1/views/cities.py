@@ -33,7 +33,7 @@ def delete_city(city_id):
         abort(404)
     city.delete()
     storage.save()
-    return jsonify({}), 204
+    return jsonify({}), 200
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'])
