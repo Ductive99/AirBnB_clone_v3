@@ -43,19 +43,22 @@ def create_review(place_id):
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
-    if not request.get_json:
-        abort(400, description="Not a JSON")
-    data = request.get_json
-    if 'user_id' not in data:
-        abort(400, description="Missing user_id")
-    if 'text' not in data:
-        abort(400, description="Missing text")
+
+    info = request.get_json(silent=True)
+    if not info:
+        abort(400, "Not a JSON")
+    if 'user_id' not in info:
+        abort(400, "Missing user_id")
+    if 'text' not in info:
+        abort(400, "Missing text")
     user_id = data['user_id']
     if storage.get(User, user_id) is None:
         abort(404)
+    
     data['place_id'] = place_id
     review = Review(**data)
-    review.save()
+    storage.new(review)
+    storage.save()
     return jsonify(review.to_dict()), 201
 
 
@@ -65,12 +68,13 @@ def update_review(review_id):
     review = storage.get(Review, review_id)
     if review is None:
         abort(404)
-    if not request.get_json:
-        abort(400, description="Not a JSON")
-    data = request.get_json
-    ignore_keys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
-    for key, value in data.items():
-        if key not in ignore_keys:
-            setattr(review, key, value)
+
+    info = request.get_json(silent=True)
+    if not info:
+        abort(400, "Not a JSON")
+
+    for k, v in info.items():
+        if k not in ['id', 'user_id', 'place_id', 'created_at', 'updated_at']:
+            setattr(review, k, v)
     review.save()
     return jsonify(review.to_dict()), 200
