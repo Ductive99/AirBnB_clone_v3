@@ -43,7 +43,8 @@ def create_user():
         abort(400, "Missing email")
     if 'password' not in info:
         abort(400, "Missing password")
-    user = User(**data)
+
+    user = User(**info)
     storage.new(user)
     storage.save()
     return jsonify(user.to_dict()), 201
