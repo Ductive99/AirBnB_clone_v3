@@ -51,10 +51,10 @@ def create_review(place_id):
         abort(400, "Missing user_id")
     if 'text' not in info:
         abort(400, "Missing text")
-    user_id = data['user_id']
+    user_id = info['user_id']
     if storage.get(User, user_id) is None:
         abort(404)
-    
+
     info['place_id'] = place_id
     review = Review(**data)
     storage.new(review)
