@@ -56,7 +56,7 @@ def create_review(place_id):
         abort(404)
 
     info['place_id'] = place_id
-    review = Review(**data)
+    review = Review(**info)
     storage.new(review)
     storage.save()
     return jsonify(review.to_dict()), 201
